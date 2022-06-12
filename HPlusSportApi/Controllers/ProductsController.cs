@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HPlusSportApi.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HPlusSportApi.Controllers
 {
@@ -7,10 +9,52 @@ namespace HPlusSportApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public string GetProducts()
+
+        private readonly ShopContext? _context;
+
+        public ProductsController(ShopContext context)
         {
-            return "OK";
+            _context = context;
+            _context.Database.EnsureCreated();
         }
+        [HttpGet]
+        public  async Task <ActionResult> GetAllProducts( )
+        {
+             return Ok( await _context.Products.ToArrayAsync());
+        }
+
+        [HttpGet("{id}")]
+    
+
+        public async Task<ActionResult> GetProduct(int id)
+        {
+
+            var product = await _context.Products.FindAsync(id);
+
+                if(product == null)
+
+            {
+                return NotFound();
+            }
+
+            return Ok(product); 
+        }
+        [HttpPost]
+        public async Task<ActionResult <Product>> PostProduct(Product product)
+        {
+           /* if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }*/
+            _context.Products.Add(product); 
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(
+                "GetProduct",
+                new { id = product.Id },
+                product
+                );
+        }
+       
     }
 }

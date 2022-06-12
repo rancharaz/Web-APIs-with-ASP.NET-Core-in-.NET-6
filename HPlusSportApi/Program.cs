@@ -5,12 +5,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+     {
+         options.SuppressModelStateInvalidFilter = true;
+     });
+
+
+void ConfigureApiBehaviourOptions(Action<object> value)
+{
+    throw new NotImplementedException();
+}
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ShopContext>(options => { options.UseInMemoryDatabase("Shop")});
+builder.Services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("Shop"));
 
 var app = builder.Build();
 
