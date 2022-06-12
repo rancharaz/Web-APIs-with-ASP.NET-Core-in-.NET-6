@@ -19,7 +19,7 @@ namespace HPlusSportApi.Models
 
         [JsonIgnore]
 
-        public virtual Category Category { get; set; }  
-
+        public virtual Category Category { get; set; }
+        public bool IsAvailable { get; internal set; }
     }
 }
